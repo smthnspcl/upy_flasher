@@ -1,6 +1,7 @@
 from os import listdir
 from subprocess import Popen, PIPE
 from sys import argv
+from time import sleep
 
 
 class Runnable(object):
@@ -103,6 +104,7 @@ class FileSystem(Runnable):
     def put(self, _f):
         if self.run(self.base + " put " + _f):
             print "put", _f
+        sleep(0.5)
 
     def put_directory(self, directory):
         if not directory.endswith('/'):
@@ -111,6 +113,7 @@ class FileSystem(Runnable):
         print "putting", len(_), "files"
         for f in _:
             self.put(directory + f)
+            sleep(1)
 
 
 if __name__ == '__main__':
