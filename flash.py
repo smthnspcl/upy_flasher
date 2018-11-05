@@ -25,24 +25,23 @@ class Runnable(object):
 
 
 class Configuration(object):
-    port = None
-    chip = None
-    binary = None
-    erase = None
+    port = "/dev/ttyUSB0"
+    chip = "esp32"
+    binary = "firmware/esp32-20180627-v1.9.4-225-gd8dc918d.bin"
+    erase = True
+    upload = []
 
-    def __init__(self, *args, **kwargs):
-        self.port = kwargs.get("port")
-        if self.port is None:
-            self.port = "/dev/ttyUSB0"
-        self.chip = kwargs.get("chip")
-        if self.chip is None:
-            self.chip = "esp32"
-        self.binary = kwargs.get("binary")
-        if self.binary is None:
-            self.binary = "firmware/esp32-20180627-v1.9.4-225-gd8dc918d.bin"
-        self.erase = kwargs.get("erase")
-        if self.erase is None:
-            self.erase = True
+    def __init__(self, **kwargs):
+        if "port" in kwargs:
+            self.port = kwargs.get("port")
+        if "chip" in kwargs:
+            self.chip = kwargs.get("chip")
+        if "binary" in kwargs:
+            self.binary = kwargs.get("binary")
+        if "erase" in kwargs:
+            self.erase = kwargs.get("erase")
+        if "upload" in kwargs:
+            self.upload += kwargs.get("upload")
 
     @staticmethod
     def parse(_argv):
@@ -57,6 +56,8 @@ class Configuration(object):
                 cfg.erase = True
             elif argv[i] in ["-c", "--chip"]:
                 cfg.chip = _argv[i + 1]
+            elif argv[i] in ["-u", "--upload"]:
+                cfg.upload += _argv[i + 1]
             i += 1
         return cfg
 
@@ -116,13 +117,26 @@ class FileSystem(Runnable):
             sleep(1)
 
 
-if __name__ == '__main__':
-    print "parsing args"
-    c = Configuration.parse(argv)
-    print "init flasher"
+def flash(c):
     f = Flasher(c)
     f.flash()
-    print "init fs"
+
+
+def upload(c):
     f = FileSystem(c)
     f.put_directory("libs")
     f.put_directory("scripts/test")
+
+
+def main():
+    print "parsing args"
+    c = Configuration.parse(argv)
+    print "flashing"
+    flash(c)
+    if c.upload is not None:
+        print "uploading"
+        upload(c)
+
+
+if __name__ == '__main__':
+    main()
