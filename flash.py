@@ -7,12 +7,12 @@ from time import sleep
 class Runnable(object):
     @staticmethod
     def run(cmd, success=None, fail=None, _print=False):
-        print cmd
+        print(cmd)
         p = Popen(cmd.split(' '), stdout=PIPE)
         p.wait()
         d = p.stdout.read()
         if _print:
-            print d
+            print(d)
         if success is not None:
             for s in success:
                 if s not in d:
@@ -83,18 +83,18 @@ class Flasher(Runnable):
 
     def flash(self):
         if self.cfg.chip is None or self.cfg.port is None:
-            print "chip / port not supplied"
+            print("chip / port not supplied")
             return False
         if self.cfg.erase:
             if self.erase():
-                print "erase successful"
+                print("erase successful")
             else:
-                print "erase failed"
+                print("erase failed")
         if self.cfg.binary is not None:
             if self.write():
-                print "write successful"
+                print("write successful")
             else:
-                print "write failed"
+                print("write failed")
 
 
 class FileSystem(Runnable):
@@ -104,14 +104,14 @@ class FileSystem(Runnable):
 
     def put(self, _f):
         if self.run(self.base + " put " + _f):
-            print "put", _f
+            print("put", _f)
         sleep(0.5)
 
     def put_directory(self, directory):
         if not directory.endswith('/'):
             directory += '/'
         _ = listdir(directory)
-        print "putting", len(_), "files"
+        print("putting", len(_), "files")
         for f in _:
             self.put(directory + f)
             sleep(1)
@@ -129,12 +129,12 @@ def upload(c):
 
 
 def main():
-    print "parsing args"
+    print("parsing args")
     c = Configuration.parse(argv)
-    print "flashing"
+    print("flashing")
     flash(c)
     if c.upload is not None:
-        print "uploading"
+        print("uploading")
         upload(c)
 
 
