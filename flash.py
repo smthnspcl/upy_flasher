@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from os import listdir
 from subprocess import Popen, PIPE
 from sys import argv
@@ -28,7 +30,7 @@ class Configuration(object):
     port = "/dev/ttyUSB0"
     chip = "esp32"
     binary = "firmware/esp32-20180627-v1.9.4-225-gd8dc918d.bin"
-    erase = True
+    erase = False
     upload = []
 
     def __init__(self, **kwargs):
@@ -42,6 +44,19 @@ class Configuration(object):
             self.erase = kwargs.get("erase")
         if "upload" in kwargs:
             self.upload += kwargs.get("upload")
+
+    @staticmethod
+    def help():
+        print("./flash.py {arguments}")
+        print("{arguments}\t\t\t{default}")
+        print("\t-p\t--port\t\t/dev/ttyUSB0")
+        print("\t-b\t--binary\tfirmware/esp32-20180627-v1.9.4-225-gd8dc918d.bin")
+        print("\t-e\t--erase\t\tnot set / false")
+        print("\t-c\t--chip\t\tesp32")
+        print("\t-u\t--upload\t[]")
+        print("\t\t\t\t-u can be used multiple times for multiple files")
+        print("\t-h\t--help")
+        exit()
 
     @staticmethod
     def parse(_argv):
@@ -58,6 +73,8 @@ class Configuration(object):
                 cfg.chip = _argv[i + 1]
             elif argv[i] in ["-u", "--upload"]:
                 cfg.upload += _argv[i + 1]
+            elif argv[i] in ["-h", "--help"]:
+                Configuration.help()
             i += 1
         return cfg
 
