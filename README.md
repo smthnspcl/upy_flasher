@@ -1,5 +1,5 @@
 ## upy_flasher
-[![Build Status](http://build.eberlein.io:8080/job/python_upy_flasher/badge/icon)](http://build.eberlein.io:8080/job/python_upy_flasher/)
+[![Build Status](https://build.eberlein.io/buildStatus/icon?job=python_upy_flasher)](https://build.eberlein.io/job/python_upy_flasher/)
 
 ### how to ...
 
